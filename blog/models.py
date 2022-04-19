@@ -8,6 +8,7 @@ from .managers import CustomUserManager
 
 
 class CustomUser(AbstractUser):
+    """class CustomUser create structure object user."""
 
     username = models.CharField(max_length=100, unique=True,
                                 verbose_name='Никнейм')
@@ -26,6 +27,7 @@ class CustomUser(AbstractUser):
 
 
 class Article(models.Model):
+    """class Article create structure object article."""
 
     title = models.CharField(max_length=100, unique=True,
                              verbose_name='Название')
@@ -45,7 +47,7 @@ class Article(models.Model):
 
 
 class Comment(MPTTModel):
-    """Comment"""
+    """class Comment create structure object comment."""
 
     name = models.CharField(max_length=100)
     text = models.TextField(max_length=5000)
