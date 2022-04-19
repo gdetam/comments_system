@@ -1,6 +1,6 @@
 from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
-from .models import Article, CustomUser
+from .models import Article, Comment, CustomUser
 
 
 class UserListSerializer(serializers.ModelSerializer):
@@ -24,10 +24,18 @@ class ArticleListSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'description')
 
 
-class ArticleSerializer(serializers.ModelSerializer):
+class CommentCreateSerializer(serializers.ModelSerializer):
 
-    author = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    class Meta:
+        model = Comment
+        fields = "__all__"
+
+
+class ArticleDetailSerializer(serializers.ModelSerializer):
+
+    author = serializers.SlugRelatedField(slug_field='username', read_only=True)
+    comments = CommentCreateSerializer(many=True)
 
     class Meta:
         model = Article
-        fields = '__all__'
+        fields = ('id', 'title', 'description', 'author', 'comments')
