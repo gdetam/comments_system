@@ -30,16 +30,16 @@ class ArticleListAPIView(generics.ListAPIView):
 
 class CommentToArticleAPIView(APIView):
 
-    def get(self, request, pk):
-        comment = Comment.objects.filter(article_id=pk, level=0)
+    def get(self, request, id):
+        comment = Comment.objects.filter(article_id=id, level=0)
         serializer = CommentToArticleSerializer(comment, many=True)
         return Response(serializer.data)
 
 
 class CommentNestedAPIView(APIView):
 
-    def get(self, request, pk):
-        comment = Comment.objects.get(id=pk).get_children()
+    def get(self, request, id):
+        comment = Comment.objects.get(id=id).get_children()
         serializer = CommentNestedSerializer(comment, many=True)
         return Response(serializer.data)
 

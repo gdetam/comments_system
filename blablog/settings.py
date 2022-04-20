@@ -4,7 +4,6 @@ from pathlib import Path
 
 from dotenv import find_dotenv, load_dotenv
 
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv(find_dotenv())
@@ -26,6 +25,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'blog.apps.BlogConfig',
     'djoser',
+    'rest_framework_swagger',
 ]
 
 MIDDLEWARE = [
@@ -52,12 +52,14 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'libraries': {
+                'staticfiles': 'django.templatetags.static',
+            }
         },
     },
 ]
 
 WSGI_APPLICATION = 'blablog.wsgi.application'
-
 
 DATABASES = {
     'default': {
@@ -67,7 +69,7 @@ DATABASES = {
         'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'password'),
         'HOST': os.environ.get('SQL_HOST', 'localhost'),
         'PORT': os.environ.get('SQL_PORT', '5432'),
-        }
+    }
 }
 
 AUTH_USER_MODEL = 'blog.CustomUser'
@@ -99,6 +101,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
     ],
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
 }
 
 LANGUAGE_CODE = 'ru'
