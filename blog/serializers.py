@@ -1,5 +1,7 @@
 from djoser.serializers import UserCreateSerializer
+
 from rest_framework import serializers
+
 from .models import Article, Comment, CustomUser
 
 
@@ -17,6 +19,15 @@ class RecursiveSerializer(serializers.Serializer):
     def to_representation(self, value):
         serializer = self.parent.parent.__class__(value, context=self.context)
         return serializer.data
+
+
+class RecursiveCommentsSerializer(serializers.Serializer):
+    """Recursive children comments list"""
+
+    def to_representation(self, value):
+        if value.level <= 2:
+            serializer = self.parent.parent.__class__(value, context=self.context)
+            return serializer.data
 
 
 class UserListSerializer(serializers.ModelSerializer):
@@ -51,23 +62,21 @@ class CommentCreateSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class CommentSerializer(serializers.ModelSerializer):
-    """Serializer for create comment to comment and recursive representation"""
+class CommentNestedSerializer(serializers.ModelSerializer):
+    """List of nested comments by parent comment"""
 
     children = RecursiveSerializer(many=True)
 
     class Meta:
-        list_serializer_class = FilterCommentSerializer
         model = Comment
-        fields = ('name', 'text', 'children')
+        fields = ('level', 'name', 'text', 'children')
 
 
-class ArticleDetailSerializer(serializers.ModelSerializer):
-    """Serializer for detail article"""
+class CommentToArticleSerializer(serializers.ModelSerializer):
+    """Get comments by article"""
 
-    author = serializers.SlugRelatedField(slug_field='username', read_only=True)
-    comments = CommentSerializer(many=True)
+    children = RecursiveCommentsSerializer(many=True)
 
     class Meta:
-        model = Article
-        fields = ('id', 'title', 'description', 'author', 'comments')
+        model = Comment
+        fields = ('pk', 'level', 'name', 'text', 'children')
