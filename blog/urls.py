@@ -1,13 +1,19 @@
-from django.urls import path, include
-from . import views
+from django.urls import include, path
 
+from .views import ArticleListAPIView, \
+                   CommentCreateAPIView, \
+                   CommentNestedAPIView, \
+                   CommentToArticleAPIView, \
+                   UserCreateAPIView, \
+                   UserListAPIView
 
 urlpatterns = [
-    path('articles/', views.ArticleListAPIView.as_view(), name='articles_list'),
-    path('articles/<int:pk>/', views.ArticleDetailAPIView.as_view(), name='articles_detail'),
-    path('comments/create/', views.CommentCreateAPIView.as_view(), name='comments_create'),
-    path('users/', views.UserListAPIView.as_view(), name='user_list'),
-    path('users/create/', views.UserCreateAPIView.as_view(), name='user_create'),
+    path('articles/list', ArticleListAPIView.as_view(), name='get_articles_list'),
+    path('articles/<int:pk>/comments', CommentToArticleAPIView.as_view(), name='get_comments_by_article'),
+    path('comments/nested/<int:pk>/', CommentNestedAPIView.as_view(), name='get_nested_comments_by_parent_comment'),
+    path('comments', CommentCreateAPIView.as_view(), name='create_comment'),
+    path('users/list', UserListAPIView.as_view(), name='get_users_list'),
+    path('users', UserCreateAPIView.as_view(), name='create_user'),
     path('auth/', include('djoser.urls.authtoken')),
     path('auth/', include('djoser.urls.jwt')),
 ]
